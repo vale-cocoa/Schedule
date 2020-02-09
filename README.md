@@ -1,3 +1,3 @@
 # Schedule
 
-A description of this package.
+A `protocol` defining functionalities for a schedule.
