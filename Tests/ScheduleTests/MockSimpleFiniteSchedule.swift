@@ -13,6 +13,7 @@ struct MockSimpleFiniteSchedule {
     }
     
     let schedulePeriod: DateInterval
+    
     let elementDuration: TimeInterval
     
     init() {
@@ -91,12 +92,13 @@ extension MockSimpleFiniteSchedule: Schedule {
         let duration = self.schedulePeriod.start.distance(to: date)
         let countOfElements = Int(duration / elementDuration) + factor
         let intervalToStart = TimeInterval(countOfElements) * elementDuration
+        
         return DateInterval(start: schedulePeriod.start.addingTimeInterval(intervalToStart), duration: elementDuration)
     }
     
     func schedule(in dateInterval: DateInterval, queue: DispatchQueue? = nil, then completion: @escaping Self.ResultCompletion) {
         DispatchQueue.global(qos: .default).async {
-            dispatchCompletion(result: .failure(Error.notImplemented), queue: queue, completion: completion)
+            dispatchResultCompletion(result: .failure(Error.notImplemented), queue: queue, completion: completion)
         }
     }
     

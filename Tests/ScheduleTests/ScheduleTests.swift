@@ -49,7 +49,7 @@ final class ScheduleTests: XCTestCase {
         
         // when
         DispatchQueue.global(qos: .default).async {
-            dispatchCompletion(result: result, completion: completion)
+            dispatchResultCompletion(result: result, completion: completion)
         }
         wait(for: [exp], timeout: 1.0)
         
@@ -69,7 +69,7 @@ final class ScheduleTests: XCTestCase {
         
         // when
         DispatchQueue.global(qos: .default).async {
-            dispatchCompletion(result: result, queue: .main, completion: completion)
+            dispatchResultCompletion(result: result, queue: .main, completion: completion)
         }
         wait(for: [exp], timeout: 1.0)
         
@@ -89,7 +89,7 @@ final class ScheduleTests: XCTestCase {
         
         // when
         DispatchQueue.global(qos: .default).async {
-            dispatchCompletion(result: result, queue: .main, completion: completion)
+            dispatchResultCompletion(result: result, queue: .main, completion: completion)
         }
         wait(for: [exp], timeout: 1.0)
         

@@ -86,7 +86,7 @@ public struct AnySchedule: Schedule {
         
         return { _, queue, completion in
             DispatchQueue.global(qos: .default).async {
-                dispatchCompletion(result: .success([]), queue: queue, completion: completion)
+                dispatchResultCompletion(result: .success([]), queue: queue, completion: completion)
             }
         }
     }
@@ -99,33 +99,8 @@ public struct AnySchedule: Schedule {
         
         return { dateInterval, queue, completion in
             DispatchQueue.global(qos: .default).async {
-                var firstCandidate: DateInterval? = generator(dateInterval.start, .on)
-                if firstCandidate == nil || (firstCandidate!.start < dateInterval.start || firstCandidate!.end < dateInterval.start) {
-                    firstCandidate = generator(dateInterval.start, .firstAfter)
-                }
-                
-                guard
-                    let startDateInterval = firstCandidate
-                    else {
-                        dispatchCompletion(result: .success([]), queue: queue, completion: completion)
-                        return
-                }
-                
-                let end = dateInterval.end
-                var results = [DateInterval]()
-                var next: DateInterval? = startDateInterval
-                while
-                    let iterationResult = next,
-                    iterationResult.start >= dateInterval.start,
-                    iterationResult.end >= dateInterval.start,
-                    iterationResult.start <= end,
-                    iterationResult.end <= end
-                {
-                    results.append(iterationResult)
-                    next = generator(iterationResult.start, .firstAfter)
-                }
-                
-                dispatchCompletion(result: .success(results), queue: queue, completion: completion)
+                let dateIntervals = _sequentiallyCalculateScheduleElements(in: dateInterval, for: generator)
+                dispatchResultCompletion(result: .success(dateIntervals), queue: queue, completion: completion)
             }
         }
     }

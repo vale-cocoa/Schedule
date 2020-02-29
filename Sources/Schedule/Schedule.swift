@@ -160,30 +160,3 @@ extension Schedule {
         }
     }
 }
-
-//MARK: - dispatchCompletion(result:queue:completion)
-/// Helper method for exectuing asynchronously a `Schedule.ResultCompletion` with
-/// the given `Result` on the given `DispatchQueue`.
-///
-/// This helper method can be used in the implementation of `schedule(in:queue:then:)`
-/// to simplify the asynchronous dispatching of the closure on either the given queue —when provided—, or on the same thread the function was called.
-/// That is, when a `queue` is provided, the completion will be asynchrously
-/// dispatched on that that thread.
-/// Otherwise when not provided, then the completion will be synchronously
-/// executed on the thread where this function has been called.
-/// - Parameter result: the `Result` to feed to the given closure.
-/// - Parameter queue: optional `DispatchQueue` where the `ResultCompletion` will be asynchronously dispatched.
-/// - Parameter completion: the `Schedule.ResultCompletion` to dispatch.
-public func dispatchCompletion(result: Result<[Schedule.Element], Error>, queue: DispatchQueue? = nil, completion: @escaping Schedule.ResultCompletion) {
-    guard
-      let queue = queue
-      else {
-        completion(result)
-        return
-    }
-    
-    queue.async {
-      completion(result)
-    }
-}
-
