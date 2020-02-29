@@ -1,9 +1,11 @@
 //
+//  Schedule
 //  Schedule.swift
 //
 //  Created by Valeriano Della Longa on 18/01/2020.
 //  Copyright © 2020 Valeriano Della Longa. All rights reserved.
 //
+
 import Foundation
 
 /// A type defining a calendric calculation criteria on a given date.
@@ -29,34 +31,38 @@ public protocol Schedule {
     
     /// Returns if either the given date does or does not fall in the `Schedule`.
     ///
-    /// - parameter _: a `Date` instance to check against the `Schedule`
-    /// - returns:`true` in case the given `Date` falls on the `Schedule`; `false` on the contrary.
-    /// - complexity:ideally this should perform O(1). O(log n) is accettable though, given n is the numebr of elements to traverse from the date to reach a scheduled element to determine the result.
+    /// - Parameter _: A `Date` instance to check against the `Schedule`
+    /// - Returns:`true` in case the given `Date` falls on the `Schedule`;
+    ///  `false` on the contrary.
+    /// - Complexity:Ideally this should perform in O(1). O(log n) is accettable though,
+    ///  given *n* is the number of contained elements to traverse to reach an element
+    ///   containing the given date, or to determine the given date is not contained in the
+    ///   schedule.
     func contains(_ date: Date) -> Bool
     
     /// Returns an optional `DateInterval` representing the `Schedule` for the given `Date` and `ScheduleMatchingDirection` parameters.
     ///
     /// Get —if it exists— either the first scheduled date interval before/after the given date
     /// or the one which has the given date falling in it.
-    /// - parameter matching: a `Date` instance to check against the `Schedule`.
-    /// - parameter direction: a `ScheduleMatchingDirection` case representing the kind of check to do.
-    /// - returns: a `DateInterval` instance in case there is a schedule for the given parameters, `nil` on the contrary.
-    /// - complexity: Ideally this should perform O(1). O(log n) is accettable though, given *n* is the numebr of elements to traverse from the date to reach a matching schedule's element or to determine there isn't a matching one.
+    /// - Parameter matching: a `Date` instance to check against the `Schedule`.
+    /// - Parameter direction: a `ScheduleMatchingDirection` case representing the kind of check to do.
+    /// - Returns: a `DateInterval` instance in case there is a schedule for the given parameters, `nil` on the contrary.
+    /// - Complexity: Ideally this should perform O(1). O(log n) is accettable though, given *n* is the numebr of elements to traverse from the date to reach a matching schedule's element or to determine there isn't a matching one.
     func schedule(matching date: Date, direction: CalendarCalculationMatchingDateDirection) -> Element?
     
-    /// Asynchronously calculate the `Schedule` elements contained on the given `DateInterval` parameter, then execute the given callback closure with the result of such calculation, eventualy dispathing such callback on a given queue..
+    /// Asynchronously calculate the `Schedule` elements contained in the given `DateInterval` parameter, then execute the given callback closure with the result of such calculation, eventualy dispathing such callback on a given queue.
     ///
     /// Calculating the schedule elements over a time frame could be an
-    /// expensive operation, therefore it has to be done asynchrounously
+    /// expensive operation; therefore it has to be done asynchrounously,
     /// then delivering the result via completion callback.
     /// For example if the `Schedule` represents every hour of the day,
     /// using as `in` parameter a `DateInterval` with a duration of 100 years
     /// results in having to perform calculations for more than 876,000 elements.
-    /// - parameter in: A `DateInterval` instance representing the time frame on which we want to calculate the schedule.
-    /// - parameter queue: optional `DispatchQueue` where the `then` completion will be executed.
-    /// - parameter then: A  closure for delivering the result.
-    /// - see also: `Swift.Result`
-    /// - note: the `then` completion might **not** be executed on the main thread,
+    /// - Parameter in: A `DateInterval` instance representing the time frame on which we want to calculate the schedule.
+    /// - Parameter queue: optional `DispatchQueue` where the `then` completion will be executed.
+    /// - Parameter then: A  closure for delivering the result.
+    /// - See Also: `Swift.Result`
+    /// - Note: the `then` completion might **not** be executed on the main thread,
     /// therefore it's highly recommended to use `.main` as `queue` parameter
     /// for operations involving UI updates done inside the callback.
     func schedule(in dateInterval: DateInterval, queue: DispatchQueue?, then completion: @escaping (Result<[Element], Error>) -> Void) -> Void
@@ -67,27 +73,29 @@ public protocol Schedule {
 extension Schedule {
     /// A functional type definig a generator of `Schedule.Element`.
     ///
-    /// - see also: `schedule(matching:direction:)`
+    /// - See Also: `schedule(matching:direction:)`
     public typealias Generator = (Date, CalendarCalculationMatchingDateDirection) -> Element?
     
-    /// A functional type defining a closure accepting as parameter the result of a `Schedule` calculation.
-    /// - see also: `Schedule.AsyncGenerator` type definition.
+    /// A functional type defining a closure accepting as parameter the result of a
+    ///  `Schedule` calculation.
+    ///
+    /// - See Also: `Schedule.AsyncGenerator` type definition.
     public typealias ResultCompletion = (Result<[Element], Error>) -> Void
     
     /// A functional type defining an asynchronous generator of `[Schedule.Element]`.
     ///
-    /// - see also: `schedule(in:queue:then:)`, `Schedule.ResultCompletion`
+    /// - See Also: `schedule(in:queue:then:)`, `Schedule.ResultCompletion`
     public typealias AsyncGenerator = (DateInterval, DispatchQueue?, @escaping ResultCompletion) -> Void
     
     /// The `Generator` closure of the `Schedule`.
     ///
     /// That is the base building block of a `Schedule`.
-    /// - see also: `Schedule.Generator` type definition.
+    /// - See Also: `Schedule.Generator` type definition.
     public var generator: Generator { return self.schedule(matching:direction:) }
     
     /// The `AsyncGenerator` of the `Schedule`.
     ///
-    /// - see also: `Schedule.AsyncGenerator` type.
+    /// - See Also: `Schedule.AsyncGenerator` type.
     public var asyncGenerator: AsyncGenerator { return self.schedule(in: queue: then:) }
 }
 
@@ -95,10 +103,10 @@ extension Schedule {
 extension Schedule {
     /// Generates a `Sequence` of `Schedule.Element`.
     ///
-    /// - parameter start: The moment from which the sequence of schedule elements should start.
-    /// - parameter end: Optionally clamp the sequence of schedule elements to a top bound date. **Must** be greather than or equal the `start` date parameter.
-    /// - returns: `AnySequence<Schedule.Element>` containing the schedule elements starting from given `start` date, eventually clamped to an upper bound represented by the —if— given `end` date.
-    /// - note: The resulting `Sequence` could be very large based on both
+    /// - Parameter start: The moment from which the sequence of schedule elements should start.
+    /// - Parameter end: Optionally clamp the sequence of schedule elements to a top bound date. **Must** be greather than or equal the `start` date parameter.
+    /// - Returns: `AnySequence<Schedule.Element>` containing the schedule elements starting from given `start` date, eventually clamped to an upper bound represented by the —if— given `end` date.
+    /// - Note: The resulting `Sequence` could be very large based on both
     /// the `Schedule` definition and the `start` to `end` time interval distance.
     /// It also could be infinite in case an `end` date is not provided.
     /// Hence in general **it would be better to use the `schedule(in:then:)`** method for
@@ -154,7 +162,8 @@ extension Schedule {
 }
 
 //MARK: - dispatchCompletion(result:queue:completion)
-/// Helper method for exectuing asynchronously a `ResultCompletion` with the given `Result` on the given `DispatchQueue`.
+/// Helper method for exectuing asynchronously a `Schedule.ResultCompletion` with
+/// the given `Result` on the given `DispatchQueue`.
 ///
 /// This helper method can be used in the implementation of `schedule(in:queue:then:)`
 /// to simplify the asynchronous dispatching of the closure on either the given queue —when provided—, or on the same thread the function was called.
@@ -162,9 +171,9 @@ extension Schedule {
 /// dispatched on that that thread.
 /// Otherwise when not provided, then the completion will be synchronously
 /// executed on the thread where this function has been called.
-/// - parameter result: the `Result` to feed to the given closure.
-/// - parameter queue: optional `DispatchQueue` where the `ResultCompletion` will be asynchronously dispatched.
-/// - parameter completion: the `ResultCompletion` to dispatch.
+/// - Parameter result: the `Result` to feed to the given closure.
+/// - Parameter queue: optional `DispatchQueue` where the `ResultCompletion` will be asynchronously dispatched.
+/// - Parameter completion: the `Schedule.ResultCompletion` to dispatch.
 public func dispatchCompletion(result: Result<[Schedule.Element], Error>, queue: DispatchQueue? = nil, completion: @escaping Schedule.ResultCompletion) {
     guard
       let queue = queue
