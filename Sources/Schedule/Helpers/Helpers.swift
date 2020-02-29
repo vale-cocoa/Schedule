@@ -8,8 +8,6 @@
 //
 
 import Foundation
-
-//MARK: - dispatchResultCompletion(result:queue:completion)
 /// Helper method for exectuing asynchronously a completion closure with
 /// the given `Result<T, Error>` on the given `DispatchQueue`.
 ///
@@ -38,6 +36,13 @@ public func dispatchResultCompletion<T>(result: Result<T, Error>, queue: Dispatc
     }
 }
 
+/// Sequentially calculates elements of a schedule for a date interval.
+///
+/// - Parameter in: The date interval for getting the schedule elements.
+/// - Parameter for: The `Schedule.Generator` of the schedule used to calculate the
+///  elements.
+/// - Returns: An `Array<DateInterval>` whose elements are all the schedule elements
+///  for the given `Schedule.Generator` contained in the given date interval.
 func _sequentiallyCalculateScheduleElements(in dateInterval: DateInterval, for generator: @escaping Schedule.Generator) -> [DateInterval]
 {
     var firstCandidate: DateInterval? = generator(dateInterval.start, .on)
