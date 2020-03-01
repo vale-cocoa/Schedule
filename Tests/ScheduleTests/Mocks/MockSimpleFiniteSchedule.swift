@@ -1,4 +1,5 @@
 //
+//  ScheduleTests
 //  MockSimpleFiniteSchedule.swift
 //
 //  Created by Valeriano Della Longa on 18/01/2020.

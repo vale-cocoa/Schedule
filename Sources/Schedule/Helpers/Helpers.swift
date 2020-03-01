@@ -45,24 +45,28 @@ public func dispatchResultCompletion<T>(result: Result<T, Error>, queue: Dispatc
 ///  for the given `Schedule.Generator` contained in the given date interval.
 func _sequentiallyCalculateScheduleElements(in dateInterval: DateInterval, for generator: @escaping Schedule.Generator) -> [DateInterval]
 {
+    // get the first element by using the dateInterval start date:
     var firstCandidate: DateInterval? = generator(dateInterval.start, .on)
-    if firstCandidate == nil || (firstCandidate!.start < dateInterval.start || firstCandidate!.end < dateInterval.start) {
+    if firstCandidate == nil || firstCandidate!.start < dateInterval.start
+    {
         firstCandidate = generator(dateInterval.start, .firstAfter)
     }
     
+    // In case such first element doesn't exist, then returns empty:
     guard
         let startDateInterval = firstCandidate
         else { return [] }
     
-    let end = dateInterval.end
+    // Iterate over elements and add them until there aren't or the
+    // current element of the scheudle falls off the given dateInterval
     var result = [DateInterval]()
     var next: DateInterval? = startDateInterval
     while
         let iterationResult = next,
         iterationResult.start >= dateInterval.start,
         iterationResult.end >= dateInterval.start,
-        iterationResult.start <= end,
-        iterationResult.end <= end
+        iterationResult.start <= dateInterval.end,
+        iterationResult.end <= dateInterval.end
     {
         result.append(iterationResult)
         next = generator(iterationResult.start, .firstAfter)
