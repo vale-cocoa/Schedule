@@ -10,50 +10,73 @@ import XCTest
 
 final class ScheduleTests: XCTestCase {
     // MARK: - Properties
-    var sut: AnySequence<DateInterval>!
+    var sut: MockSchedule!
     
     // MARK: - Test lifecycle
     override func setUp() {
         super.setUp()
         
+        sut = MockSchedule()
     }
     
     override func tearDown() {
-        self.sut = nil
+        sut = nil
         
         super.tearDown()
     }
     
     // MARK: - Given
-    
     // MARK: - When
-    func whenEmpty() {
-        sut = MockSimpleFiniteSchedule().generate()
-    }
+    // MARK: - Then
     
-    func whenNotEmpty(count: Int) {
-        sut = MockSimpleFiniteSchedule(count: count, duration: 3600.0, start: Date(timeIntervalSinceReferenceDate: 0)).generate()
-    }
-    
-    // MARK: - Tests
-    // MARK: - Tests for generate()
-    func test_generateSequence_whenEmpty_returnsNilAsFirstNextElement() {
+    // MARK: - Tests for default implementations
+    func test_generator_callsInstanceMethodScheduleMatchingDirection()
+    {
         // given
+        let startingCount = sut.countOfGeneratorCalls
+        
         // when
-        whenEmpty()
+        _ = sut.generator(.distantPast, .on)
         
         // then
-        XCTAssertNil(sut.makeIterator().next())
+        XCTAssertEqual(sut.countOfGeneratorCalls, startingCount + 1)
     }
     
-    func test_generateSequence_whenNotEmpty_returnsSameCountOfElements() {
+    func test_asyncGenerator_callsInstanceMethodScheduleInQueueThen()
+    {
+        // given
+        let startingCount = sut.countOfAsyncGeneratorCalls
+        
+        // when
+        sut.asyncGenerator(DateInterval(start: .distantPast, end: .distantFuture), .main, {_ in } )
+        
+        // then
+        XCTAssertEqual(sut.countOfAsyncGeneratorCalls, startingCount + 1)
+    }
+    
+    func test_generateSequence_whenEmpty_returnsNilAsFirstNextElement()
+    {
+        // given
+        let emptySchedule = MockSimpleFiniteSchedule()
+        
+        // when
+        let emptySUT = emptySchedule.generate()
+        
+        // then
+        XCTAssertNil(emptySUT.makeIterator().next())
+    }
+    
+    func test_generateSequence_whenNotEmpty_returnsSameCountOfElements()
+    {
         // given
         let count = 100
-        whenNotEmpty(count: count)
+        let notEmptySchedule = MockSimpleFiniteSchedule(count: count, duration: 3600.0, start: Date(timeIntervalSinceReferenceDate: 0))
+        let notEmptySUT = notEmptySchedule.generate()
+        
         var result = [DateInterval]()
         
         // when
-        for scheduled in sut {
+        for scheduled in notEmptySUT {
             result.append(scheduled)
         }
         
@@ -61,7 +84,8 @@ final class ScheduleTests: XCTestCase {
         XCTAssertEqual(count, result.count)
     }
     
-    func test_generateSequence_whenNotEmpty_returnsSameElements() {
+    func test_generateSequence_whenNotEmpty_returnsSameElements()
+    {
         // given
         let count = 100
         let notEmptySchedule = MockSimpleFiniteSchedule(count: count, duration: 3600.0, start: Date(timeIntervalSinceReferenceDate: 0))
@@ -90,7 +114,9 @@ final class ScheduleTests: XCTestCase {
     }
     
     static var allTests = [
-       ("test_generateSequence_whenEmpty_returnsNilAsFirstNextElement", test_generateSequence_whenEmpty_returnsNilAsFirstNextElement),
+        ("test_generator_callsInstanceMethodScheduleMatchingDirection", test_generator_callsInstanceMethodScheduleMatchingDirection),
+        ("test_asyncGenerator_callsInstanceMethodScheduleInQueueThen", test_asyncGenerator_callsInstanceMethodScheduleInQueueThen),
+        ("test_generateSequence_whenEmpty_returnsNilAsFirstNextElement", test_generateSequence_whenEmpty_returnsNilAsFirstNextElement),
         ("test_generateSequence_whenNotEmpty_returnsSameCountOfElements", test_generateSequence_whenNotEmpty_returnsSameCountOfElements),
         ("test_generateSequence_whenNotEmpty_returnsSameElements", test_generateSequence_whenNotEmpty_returnsSameElements),
         
