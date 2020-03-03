@@ -17,11 +17,21 @@ final class MockSchedule: Schedule  {
     
     var countOfGeneratorCalls = 0
     var countOfAsyncGeneratorCalls = 0
+    var countOfIsEmptyCalls = 0
+    var countOfContainsCalls = 0
     
     // MARK: - Schedule conformance
-    var isEmpty: Bool { return true }
+    var isEmpty: Bool {
+        countOfIsEmptyCalls += 1
+        
+        return true
+    }
     
-    func contains(_ date: Date) -> Bool { return false }
+    func contains(_ date: Date) -> Bool {
+        countOfContainsCalls += 1
+        
+        return false
+    }
     
     func schedule(matching date: Date, direction: CalendarCalculationMatchingDateDirection) -> Element? {
         self.countOfGeneratorCalls += 1
