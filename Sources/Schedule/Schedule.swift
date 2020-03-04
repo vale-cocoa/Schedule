@@ -163,9 +163,9 @@ extension Schedule {
 }
 
 // MARK: - Global public functions and properties
-/// Checks if a given `Generator` produces or not any `Element`.
+/// Checks if a given `Schedule.Generator` produces or not any `Element`.
 ///
-/// - Parameter _: A `Generator` to check for emptyness.
+/// - Parameter _: A `Schedule.Generator` to check for emptyness.
 /// - Returns: `true` if the given generator can't produce any element; `false` on the contrary.
 public func isEmpty(_ generator: Schedule.Generator) -> Bool
 {
@@ -174,6 +174,6 @@ public func isEmpty(_ generator: Schedule.Generator) -> Bool
     return anElement == nil
 }
     
-/// A `Generator` which doesn't produce any element.
+/// A `Schedule.Generator` which doesn't produce any element.
 public let emptyGenerator: Schedule.Generator = { _, _ in  return nil }
     
