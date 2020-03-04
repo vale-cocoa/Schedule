@@ -44,7 +44,7 @@ A convenient typealias for the closure type used for the result delivery from an
 `Schedule` protocol defines a functional type `(DateInterval, DispatchQueue?, Schedule.ResultCompletion) -> Void` and maps its instance property `asyncGenerator` of this type to its instance method  `Schedule(in:queue:then:)`. 
 That is a "generator" of `Schedule.Element` working asynchronously is referred to a function of type  `(DateInterval, DispatchQueue?, Schedule.ResultCompletion) -> Void`.
 
-## `isEmpty(_:)` global function
+## `isEmptyGenerator(_:)` global function
 Check if given `Schedule.Generator` produces or not any `Schedule.Element`.
 
 ## `emptyGenerator` global constant

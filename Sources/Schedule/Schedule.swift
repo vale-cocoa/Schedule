@@ -167,7 +167,7 @@ extension Schedule {
 ///
 /// - Parameter _: A `Schedule.Generator` to check for emptyness.
 /// - Returns: `true` if the given generator can't produce any element; `false` on the contrary.
-public func isEmpty(_ generator: Schedule.Generator) -> Bool
+public func isEmptyGenerator(_ generator: Schedule.Generator) -> Bool
 {
     let anElement = generator(.distantPast, .on) ?? generator(.distantPast, .firstAfter) ?? generator(.distantFuture, .on) ?? generator(.distantFuture, .firstBefore)
         
