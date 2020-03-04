@@ -128,12 +128,12 @@ final class ScheduleTests: XCTestCase {
     }
     
     // MARK: - Tests for Global public API
-    func test_isEmpty_returnsTrueForEmptyGenerator()
+    func test_isEmptyGenerator_returnsTrueForEmptyGenerator()
     {
-        XCTAssertTrue(isEmpty(emptyGenerator))
+        XCTAssertTrue(isEmptyGenerator(emptyGenerator))
     }
     
-    func test_isEmpty_whenGeneratorProducesElementBeforeDistantPast_returnsFalse()
+    func test_isEmptyGenerator_whenGeneratorProducesElementBeforeDistantPast_returnsFalse()
     {
         // given
         // when
@@ -141,10 +141,10 @@ final class ScheduleTests: XCTestCase {
         let generator = givenOneElementScheduleGenerator(elementBeforeDistantPast)
         
         // then
-        XCTAssertFalse(isEmpty(generator))
+        XCTAssertFalse(isEmptyGenerator(generator))
     }
     
-    func test_isEmpty_whenGeneratorProducesElementAfterDistantFuture_returnsFalse()
+    func test_isEmptyGenerator_whenGeneratorProducesElementAfterDistantFuture_returnsFalse()
     {
         // given
         // when
@@ -152,10 +152,10 @@ final class ScheduleTests: XCTestCase {
         let generator = givenOneElementScheduleGenerator(elementAfterDistantFuture)
         
         // then
-        XCTAssertFalse(isEmpty(generator))
+        XCTAssertFalse(isEmptyGenerator(generator))
     }
     
-    func test_isEmpty_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse()
+    func test_isEmptyGenerator_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse()
     {
         // given
         // when
@@ -163,7 +163,7 @@ final class ScheduleTests: XCTestCase {
         let generator = givenOneElementScheduleGenerator(element)
         
         // then
-        XCTAssertFalse(isEmpty(generator))
+        XCTAssertFalse(isEmptyGenerator(generator))
     }
     
     static var allTests = [
@@ -172,10 +172,10 @@ final class ScheduleTests: XCTestCase {
         ("test_generateSequence_whenEmpty_returnsNilAsFirstNextElement", test_generateSequence_whenEmpty_returnsNilAsFirstNextElement),
         ("test_generateSequence_whenNotEmpty_returnsSameCountOfElements", test_generateSequence_whenNotEmpty_returnsSameCountOfElements),
         ("test_generateSequence_whenNotEmpty_returnsSameElements", test_generateSequence_whenNotEmpty_returnsSameElements),
-        ("test_isEmpty_returnsTrueForEmptyGenerator", test_isEmpty_returnsTrueForEmptyGenerator),
-        ("test_isEmpty_whenGeneratorProducesElementBeforeDistantPast_returnsFalse", test_isEmpty_whenGeneratorProducesElementBeforeDistantPast_returnsFalse),
-        ("test_isEmpty_whenGeneratorProducesElementAfterDistantFuture_returnsFalse", test_isEmpty_whenGeneratorProducesElementAfterDistantFuture_returnsFalse),
-        ("test_isEmpty_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse", test_isEmpty_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse),
+        ("test_isEmptyGenerator_returnsTrueForEmptyGenerator", test_isEmptyGenerator_returnsTrueForEmptyGenerator),
+        ("test_isEmptyGenerator_whenGeneratorProducesElementBeforeDistantPast_returnsFalse", test_isEmptyGenerator_whenGeneratorProducesElementBeforeDistantPast_returnsFalse),
+        ("test_isEmptyGenerator_whenGeneratorProducesElementAfterDistantFuture_returnsFalse", test_isEmptyGenerator_whenGeneratorProducesElementAfterDistantFuture_returnsFalse),
+        ("test_isEmptyGenerator_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse", test_isEmptyGenerator_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse),
         
     ]
 }

@@ -51,7 +51,7 @@ public struct AnySchedule: Schedule {
     public init(body generator: @escaping Schedule.Generator) {
         self._boxGenerator = generator
         
-        self.isEmpty = ( generator(.distantPast, .on) ?? generator(.distantPast, .firstAfter) ) == nil
+        self.isEmpty = isEmptyGenerator(generator)
         
         self._boxAsyncGenerator = self.isEmpty ? Self._emptyAsyncGenerator() : Self._sequentialAsyncGenerator(using: generator)
     }
