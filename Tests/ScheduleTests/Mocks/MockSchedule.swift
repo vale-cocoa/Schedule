@@ -9,6 +9,7 @@
 
 import Foundation
 import Schedule
+import DispatchResultCompletion
 
 final class MockSchedule: Schedule  {
     enum Error: Swift.Error {
