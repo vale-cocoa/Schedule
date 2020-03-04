@@ -26,6 +26,21 @@ final class ScheduleTests: XCTestCase {
     }
     
     // MARK: - Given
+    func givenOneElementScheduleGenerator(_ element: DateInterval) -> Schedule.Generator
+    {
+        return { date, direction in
+            switch direction
+            {
+            case .on:
+                return element.contains(date) ? element : nil
+            case .firstBefore:
+                return date > element.end ? element : nil
+            case .firstAfter:
+                return date < element.start ? element : nil
+            }
+        }
+    }
+    
     // MARK: - When
     // MARK: - Then
     
@@ -110,7 +125,45 @@ final class ScheduleTests: XCTestCase {
         }
         
         XCTAssertEqual(expectedResult, result)
+    }
+    
+    // MARK: - Tests for Global public API
+    func test_isEmpty_returnsTrueForEmptyGenerator()
+    {
+        XCTAssertTrue(isEmpty(emptyGenerator))
+    }
+    
+    func test_isEmpty_whenGeneratorProducesElementBeforeDistantPast_returnsFalse()
+    {
+        // given
+        // when
+        let elementBeforeDistantPast = DateInterval(start: Date(timeInterval: -7200, since: .distantPast), duration: 3600)
+        let generator = givenOneElementScheduleGenerator(elementBeforeDistantPast)
         
+        // then
+        XCTAssertFalse(isEmpty(generator))
+    }
+    
+    func test_isEmpty_whenGeneratorProducesElementAfterDistantFuture_returnsFalse()
+    {
+        // given
+        // when
+        let elementAfterDistantFuture = DateInterval(start: Date(timeInterval: 3600, since: .distantFuture), duration: 3600)
+        let generator = givenOneElementScheduleGenerator(elementAfterDistantFuture)
+        
+        // then
+        XCTAssertFalse(isEmpty(generator))
+    }
+    
+    func test_isEmpty_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse()
+    {
+        // given
+        // when
+        let element = DateInterval(start: Date(timeIntervalSinceReferenceDate: 0), duration: 3600)
+        let generator = givenOneElementScheduleGenerator(element)
+        
+        // then
+        XCTAssertFalse(isEmpty(generator))
     }
     
     static var allTests = [
@@ -119,6 +172,10 @@ final class ScheduleTests: XCTestCase {
         ("test_generateSequence_whenEmpty_returnsNilAsFirstNextElement", test_generateSequence_whenEmpty_returnsNilAsFirstNextElement),
         ("test_generateSequence_whenNotEmpty_returnsSameCountOfElements", test_generateSequence_whenNotEmpty_returnsSameCountOfElements),
         ("test_generateSequence_whenNotEmpty_returnsSameElements", test_generateSequence_whenNotEmpty_returnsSameElements),
+        ("test_isEmpty_returnsTrueForEmptyGenerator", test_isEmpty_returnsTrueForEmptyGenerator),
+        ("test_isEmpty_whenGeneratorProducesElementBeforeDistantPast_returnsFalse", test_isEmpty_whenGeneratorProducesElementBeforeDistantPast_returnsFalse),
+        ("test_isEmpty_whenGeneratorProducesElementAfterDistantFuture_returnsFalse", test_isEmpty_whenGeneratorProducesElementAfterDistantFuture_returnsFalse),
+        ("test_isEmpty_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse", test_isEmpty_whenGeneratorProducesElementInBetweenDistantPastAndDistantFuture_returnsFalse),
         
     ]
 }

@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "DispatchResultCompletion",
+        "repositoryURL": "https://github.com/vale-cocoa/DispatchResultCompletion.git",
+        "state": {
+          "branch": null,
+          "revision": "19589fbc8d392ec70d99416c6ccb5f4f4fd7faa2",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

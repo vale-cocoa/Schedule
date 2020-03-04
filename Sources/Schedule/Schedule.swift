@@ -162,23 +162,18 @@ extension Schedule {
     
 }
 
-extension Schedule {
-    /// Checks if a given `Generator` produces or not any `Element`.
-    ///
-    /// - Parameter _: A `Generator` to check for emptyness.
-    /// - Returns: `true` if the given generator can't produce any element;
-    ///   `false` on the contrary.
-    public static func isEmpty(_ generator: Generator) -> Bool
-    {
-        let anElement = generator(.distantPast, .on) ?? generator(.distantPast, .firstAfter) ?? generator(.distantFuture, .on) ?? generator(.distantFuture, .firstBefore)
+// MARK: - Global public functions and properties
+/// Checks if a given `Generator` produces or not any `Element`.
+///
+/// - Parameter _: A `Generator` to check for emptyness.
+/// - Returns: `true` if the given generator can't produce any element; `false` on the contrary.
+public func isEmpty(_ generator: Schedule.Generator) -> Bool
+{
+    let anElement = generator(.distantPast, .on) ?? generator(.distantPast, .firstAfter) ?? generator(.distantFuture, .on) ?? generator(.distantFuture, .firstBefore)
         
-        return anElement != nil
-    }
-    
-    /// A `Generator` which doesn't produce any element.
-    public static var emptyGenerator: Generator {
-        
-        return { _, _ in  return nil }
-    }
-    
+    return anElement == nil
 }
+    
+/// A `Generator` which doesn't produce any element.
+public let emptyGenerator: Schedule.Generator = { _, _ in  return nil }
+    
