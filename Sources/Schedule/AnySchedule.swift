@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import DispatchResultCompletion
+import VDLGCDHelpers
 
 /// A type erased schedule which hides the underlaying concrete schedule type details.
 public struct AnySchedule: Schedule {

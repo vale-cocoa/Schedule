@@ -7,7 +7,7 @@
 //
 import Foundation
 import Schedule
-import DispatchResultCompletion
+import VDLGCDHelpers
 
 struct MockSimpleFiniteSchedule {
     enum Error: Swift.Error {
