@@ -101,7 +101,7 @@ final class CommonTimeTableGeneratorTests: XCTestCase {
             let candidate: Int!
             let incremented = compValue + shift
             if incremented >= rangeOfComponent.upperBound {
-                candidate = incremented - rangeOfComponent.count
+                candidate = incremented - (rangeOfComponent.upperBound - rangeOfComponent.lowerBound)
             } else {
                 candidate = incremented
             }
@@ -127,7 +127,7 @@ final class CommonTimeTableGeneratorTests: XCTestCase {
             let candidate: Int!
             let incremented = compValue + shift
             if incremented < rangeOfComponent.lowerBound {
-                candidate = incremented + rangeOfComponent.count
+                candidate = incremented + (rangeOfComponent.upperBound - rangeOfComponent.lowerBound)
             } else {
                 candidate = incremented
             }
@@ -314,6 +314,38 @@ final class CommonTimeTableGeneratorTests: XCTestCase {
                 XCTAssertGreaterThanOrEqual(firstAfterResult!.start, onResult.end)
             }
         }
+    }
+    
+    func test_whenReturnsNotEmptyGeneratorOnScheduleHasThreeValues_forDirection_returnsElementsInRightOrder()
+    {
+        // given
+        for when in whenReturnsNotEmptyGenerator_cases(setRandomlyThreeValues: true)
+        {
+            // when
+            when()
+            let orderedValues = Array(values).sorted(by: <)
+            let onDate = calendar.date(bySetting: component, value: orderedValues[1], of: refDate)!
+            let onResult = sut(onDate, .on)!
+            let firstBeforeResult = sut(onDate, .firstBefore)!
+            let firstAfterResult = sut(onDate, .firstAfter)!
+            
+            // then
+            XCTAssertLessThan(firstBeforeResult.start, onResult.start)
+            XCTAssertLessThanOrEqual(firstBeforeResult.end, onResult.start)
+            XCTAssertGreaterThan(firstAfterResult.start, onResult.start)
+            XCTAssertGreaterThanOrEqual(firstAfterResult.start, onResult.end)
+            
+            // let's also assert for components…
+            let onResultStartCompValue = calendar.component(component, from: onResult.start)
+            XCTAssertTrue(values.contains(onResultStartCompValue))
+            
+            let firstBeforeStartCompValue = calendar.component(component, from: firstBeforeResult.start)
+            XCTAssertTrue(values.contains(firstBeforeStartCompValue), "wrong component value set: \(firstBeforeStartCompValue) - values: \(values!) - calendar: \(calendar!) - component: \(component!) - shift applied: \(shiftAmountToFirstBefore(for: onDate)!) - rangeOfValuesForComponent: \(calendar.maximumRange(of: component)!) - endDateComponent: \(calendar.component(component, from: firstBeforeResult.end))")
+            
+            let firstAfterStartCompValue = calendar.component(component, from: firstAfterResult.start)
+            XCTAssertTrue(values.contains(firstAfterStartCompValue), "wrong component value set: \(firstAfterStartCompValue) - values: \(values!) - calendar: \(calendar!) - component: \(component!) - shift applied: \(shiftAmountToFirstAfter(for: onDate)!) - rangeOfValuesForComponent: \(calendar.maximumRange(of: component)!) - endDateComponent: \(calendar.component(component, from: firstAfterResult.end))")
+        }
+        
     }
     
     static var allTests = [

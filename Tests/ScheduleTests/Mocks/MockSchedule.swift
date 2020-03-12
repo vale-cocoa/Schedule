@@ -9,7 +9,7 @@
 
 import Foundation
 import Schedule
-import DispatchResultCompletion
+import VDLGCDHelpers
 
 final class MockSchedule: Schedule  {
     enum Error: Swift.Error {

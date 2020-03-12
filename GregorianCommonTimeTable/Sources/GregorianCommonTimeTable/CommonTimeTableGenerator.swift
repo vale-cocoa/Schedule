@@ -63,10 +63,10 @@ public func scheduleGeneratorFrom(associatedCalendar calendar: Calendar, timetab
             let candidate: Int!
             if increment == 1 && incremented >= componentRange.upperBound
             {
-                candidate = incremented - componentRange.count
+                candidate = incremented - (componentRange.upperBound - componentRange.lowerBound)
             } else if increment == -1 && incremented < componentRange.lowerBound
             {
-                candidate = incremented + componentRange.count
+                candidate = incremented + (componentRange.upperBound - componentRange.lowerBound)
             } else {
                 candidate = incremented
             }
