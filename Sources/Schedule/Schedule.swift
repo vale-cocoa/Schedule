@@ -141,7 +141,7 @@ extension Schedule {
             }
             
             if
-                let nexCandidate = nextResult,
+                let nextCandidate = nextResult,
                 let endDate = end,
                 (nextCandidate.start > endDate || nextCandidate.end > endDate)
             {
