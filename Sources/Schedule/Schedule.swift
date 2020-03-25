@@ -134,11 +134,18 @@ extension Schedule {
             
             var nextResult: Element? = self.generator(start, .on) ?? self.generator(start, .firstAfter)
             if
-                let nextCandidate = nextResult,
-                let endDate = end,
-                (nextCandidate.start > endDate || nextCandidate.end > endDate)
+                let nextCandidate = nextResult
             {
-                nextResult = nil
+                if
+                    nextCandidate.start > start
+                {
+                    nextResult = nil
+                } else if
+                    let endDate = end,
+                    (nextCandidate.start > endDate || nextCandidate.end > endDate)
+                {
+                    nextResult = nil
+                }
             }
             
             return AnyIterator {
