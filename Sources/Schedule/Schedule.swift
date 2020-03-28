@@ -183,4 +183,11 @@ public func isEmptyGenerator(_ generator: Schedule.Generator) -> Bool
     
 /// A `Schedule.Generator` which doesn't produce any element.
 public let emptyGenerator: Schedule.Generator = { _, _ in  return nil }
-    
+
+/// A `Schedule.Asyncgenerator` which produces always `.success` results containing
+///  an empty`Array<Schedule.Element>`.
+public let emptyAsyncGenerator: Schedule.AsyncGenerator = { _, queue, completion in
+    DispatchQueue.global(qos: .userInitiated).async {
+        dispatchResultCompletion(result: .success([DateInterval]()), queue: queue, completion: completion)
+    }
+}
