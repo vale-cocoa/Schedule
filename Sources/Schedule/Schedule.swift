@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import VDLGCDHelpers
 
 /// A type defining a calendric calculation criteria on a given date.
 
